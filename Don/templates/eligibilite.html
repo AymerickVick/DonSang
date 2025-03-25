@@ -1,0 +1,446 @@
+<!-- templates/eligibilite.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérification d'Éligibilité - Don de Sang</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #d9534f;
+            --primary-dark: #c9302c;
+            --secondary-color: #e74c3c;
+            --accent-color: #4682b4;
+            --background-gradient-start: #1e293b;
+            --background-gradient-end: #334155;
+            --text-dark: #2c3e50;
+            --text-light: #f8fafc;
+            --success-green: #10b981;
+            --danger-red: #ef4444;
+            --transition-speed: 0.3s;
+            --sidebar-width: 280px;
+            --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--background-gradient-start), var(--background-gradient-end));
+            color: var(--text-light);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+            animation: fadeInBody 1s ease-in-out;
+        }
+
+        @keyframes fadeInBody {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.05);
+            z-index: -1;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 40px; /* Augmentation du padding pour plus d'espace */
+            width: calc(100% - var(--sidebar-width)); /* Occupation de tout l'espace disponible */
+            min-height: 100vh;
+            transition: var(--transition-speed);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px; /* Largeur maximale augmentée pour plus d'espace */
+            padding: 30px; /* Plus de padding interne */
+            background: rgba(30, 41, 59, 0.8); /* Fond inspiré du second code */
+            border-radius: 16px;
+            box-shadow: var(--box-shadow);
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+
+        .heart-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-right: 20px;
+        }
+
+        .heart {
+            width: 80px;
+            height: 80px;
+            background: var(--secondary-color);
+            position: relative;
+            transform: rotate(-45deg);
+            animation: pulse 1.5s infinite ease-in-out;
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            width: 80px;
+            height: 80px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .heart::before {
+            left: 40px;
+            top: 0;
+        }
+
+        .heart::after {
+            left: 0;
+            top: -40px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: rotate(-45deg) scale(1); }
+            50% { transform: rotate(-45deg) scale(1.1); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 4px;
+            bottom: -10px;
+            left: 0;
+            background: var(--accent-color);
+        }
+
+        .message-box {
+            max-width: 700px;
+            margin: 0 auto 30px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: var(--box-shadow);
+            border-left: 4px solid var(--primary-color);
+            animation: slideDown 0.5s ease forwards;
+        }
+
+        .message-box p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .eligibilite-form {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-light);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: var(--transition-speed);
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 10px rgba(70, 130, 180, 0.5);
+        }
+
+        .info-group {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .info-group p {
+            margin: 10px 0;
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+
+        .info-group p strong {
+            color: var(--accent-color);
+            margin-right: 8px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: var(--text-light);
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 500;
+            text-transform: uppercase;
+            transition: var(--transition-speed);
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--box-shadow);
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(169, 68, 66, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--accent-color);
+        }
+
+        .btn-secondary:hover {
+            background: #3b72a5;
+            box-shadow: 0 5px 15px rgba(70, 130, 180, 0.4);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.15);
+            border-left: 4px solid var(--success-green);
+            color: #ecfdf5;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.15);
+            border-left: 4px solid var(--danger-red);
+            color: #fef2f2;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                width: 100%;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .heart-container {
+                width: 60px;
+                height: 60px;
+            }
+
+            .heart, .heart::before, .heart::after {
+                width: 60px;
+                height: 60px;
+            }
+
+            .heart::before {
+                left: 30px;
+            }
+
+            .heart::after {
+                top: -30px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'sidebar.html' %}
+
+    <div class="background-overlay"></div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="header-section">
+                <div class="heart-container">
+                    <div class="heart"></div>
+                </div>
+                <h1><i class="fas fa-user-check"></i> Vérification d'Éligibilité</h1>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message-box {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if resultat %}
+                <div class="message-box {% if 'Éligible' in resultat %}alert-success{% else %}alert-error{% endif %}">
+                    <p>{{ resultat }}</p>
+                </div>
+            {% endif %}
+
+            <form method="POST" class="eligibilite-form">
+                {% csrf_token %}
+                <div class="form-section">
+                    <h2>Sélectionner un Donneur</h2>
+                    <div class="form-group">
+                        <label for="donneur_id">Choisir un donneur :</label>
+                        <select name="donneur_id" id="donneur_id" required>
+                            <option value="">-- Sélectionner un donneur --</option>
+                            {% for d in donneurs %}
+                                <option style= "color: black;" value="{{ d.id }}" {% if d.id == donneur.id %}selected{% endif %}>
+                                    Donneur {{ d.id }} - {{ d.genre }} - {{ d.age }} ans - {{ d.quartier_residence }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                {% if donneur %}
+                    <div class="form-section">
+                        <h2>Informations du Donneur</h2>
+                        <div class="info-group">
+                            <p><strong>ID :</strong> {{ donneur.id }}</p>
+                            <p><strong>Date de remplissage :</strong> {{ donneur.date_remplissage }}</p>
+                            <p><strong>Date de naissance :</strong> {{ donneur.date_naissance }}</p>
+                            <p><strong>Âge :</strong> {{ donneur.age }} ans</p>
+                            <p><strong>Genre :</strong> {{ donneur.genre }}</p>
+                            <p><strong>Niveau d'étude :</strong> {{ donneur.niveau_etude }}</p>
+                            <p><strong>Situation matrimoniale :</strong> {{ donneur.situation_matrimoniale }}</p>
+                            <p><strong>Profession :</strong> {{ donneur.profession }}</p>
+                            <p><strong>Arrondissement de résidence :</strong> {{ donneur.arrondissement_residence }}</p>
+                            <p><strong>Quartier de résidence :</strong> {{ donneur.quartier_residence }}</p>
+                            <p><strong>Poids :</strong> {{ donneur.poids }} kg</p>
+                        </div>
+                    </div>
+
+                    {% if conditions %}
+                        <div class="form-section">
+                            <h2>Conditions de Santé</h2>
+                            <div class="info-group">
+                                <p><strong>Taille :</strong> {{ conditions.taille }} cm</p>
+                                <p><strong>Poids :</strong> {{ conditions.poids }} kg</p>
+                                <p><strong>Maladie chronique :</strong> {{ conditions.maladie_chronique }}</p>
+                                <p><strong>Dernier don :</strong> {{ conditions.dernier_don|default:"Non spécifié" }}</p>
+                                <p><strong>Porteur du VIH :</strong> {{ conditions.porteur_hiv|yesno:"Oui,Non" }}</p>
+                                <p><strong>Porteur de l'hépatite B :</strong> {{ conditions.porteur_hbs|yesno:"Oui,Non" }}</p>
+                                <p><strong>Porteur de l'hépatite C :</strong> {{ conditions.porteur_hcv|yesno:"Oui,Non" }}</p>
+                                <p><strong>Opéré récemment :</strong> {{ conditions.opere|yesno:"Oui,Non" }}</p>
+                                <p><strong>Drépanocytaire :</strong> {{ conditions.drepanocytaire|yesno:"Oui,Non" }}</p>
+                                <p><strong>Diabétique :</strong> {{ conditions.diabetique|yesno:"Oui,Non" }}</p>
+                                <p><strong>Hypertendu :</strong> {{ conditions.hypertendu|yesno:"Oui,Non" }}</p>
+                                <p><strong>Asthmatique :</strong> {{ conditions.asthmatique|yesno:"Oui,Non" }}</p>
+                                <p><strong>Problèmes cardiaques :</strong> {{ conditions.cardiaque|yesno:"Oui,Non" }}</p>
+                                <p><strong>Tatoué :</strong> {{ conditions.tatoue|yesno:"Oui,Non" }}</p>
+                                {% if conditions.tatoue %}
+                                    <p><strong>Date du tatouage :</strong> {{ conditions.date_tatouage }}</p>
+                                {% endif %}
+                                <p><strong>Scarifié :</strong> {{ conditions.scarifie|yesno:"Oui,Non" }}</p>
+                                {% if conditions.scarifie %}
+                                    <p><strong>Date de scarification :</strong> {{ conditions.date_scarification }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                <div class="form-actions">
+                    <button type="submit" class="btn"><i class="fas fa-check"></i> Vérifier l'Éligibilité</button>
+                    <a href="{% url 'tableau_eligibilite' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Retour à la Liste</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

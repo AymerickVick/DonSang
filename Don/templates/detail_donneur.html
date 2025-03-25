@@ -1,0 +1,425 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du Donneur #{{ donneur.id }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Variables CSS cohérentes avec les designs précédents */
+        :root {
+            --primary-color: #2c3e50;       /* Bleu foncé */
+            --secondary-color: #e74c3c;      /* Rouge vif */
+            --accent-color: #3498db;        /* Bleu clair */
+            --background-gradient-start: #2c3e50;
+            --background-gradient-end: #34495e;
+            --text-dark: #2c3e50;
+            --text-light: #ecf0f1;          /* Blanc cassé */
+            --transition-speed: 0.3s;
+            --sidebar-width: 280px;
+            --box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif; /* Roboto pour un look officiel */
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--background-gradient-start), var(--background-gradient-end));
+            color: var(--text-dark);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .background-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .medical-silhouettes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .main-content {
+            margin-left: calc(var(--sidebar-width) + 2rem);
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container.official-document {
+            max-width: 900px;
+            width: 100%;
+            background: #fff; /* Fond blanc pour un look officiel */
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: var(--box-shadow);
+            border: 1px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* En-tête du document */
+        .document-header {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(to right, rgba(44, 62, 80, 0.1), transparent); /* Dégradé subtil */
+        }
+
+        .header-logo {
+            flex-shrink: 0;
+            margin-right: 2rem;
+        }
+
+        .heart-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .heart {
+            width: 80px;
+            height: 80px;
+            background: var(--secondary-color);
+            position: relative;
+            transform: rotate(-45deg);
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            width: 80px;
+            height: 80px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .heart::before {
+            left: 40px;
+            top: 0;
+        }
+
+        .heart::after {
+            left: 0;
+            top: -40px;
+        }
+
+        .header-title h1 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-title p {
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-weight: 400;
+        }
+
+        /* Corps du document */
+        .document-body {
+            margin-bottom: 2rem;
+        }
+
+        .document-section {
+            margin-bottom: 2rem;
+        }
+
+        .document-section h2 {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(236, 240, 241, 0.5); /* Fond gris clair pour contraste */
+            border-radius: 8px;
+            border: 1px solid rgba(52, 152, 219, 0.2); /* Bordure bleue subtile */
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem;
+            border-bottom: 1px dashed rgba(44, 62, 80, 0.2); /* Ligne pointillée pour séparation */
+        }
+
+        .info-item:last-child,
+        .info-item:nth-last-child(2):nth-child(odd) {
+            border-bottom: none; /* Supprime la bordure pour les derniers éléments */
+        }
+
+        .info-label {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            font-weight: 400;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .no-data {
+            font-style: italic;
+            color: var(--accent-color);
+            text-align: center;
+            padding: 1rem;
+            background: rgba(236, 240, 241, 0.5);
+            border-radius: 8px;
+        }
+
+        /* Bouton de retour */
+        .btn-group {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--secondary-color);
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all var(--transition-speed);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all var(--transition-speed);
+        }
+
+        .btn:hover::before {
+            left: 0;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+            background: var(--accent-color); /* Bleu clair au survol */
+        }
+
+        /* Responsivité */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .document-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-logo {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-particles" id="particles"></div>
+    <div class="medical-silhouettes" id="medicalSilhouettes"></div>
+
+    <!-- Inclusion de la sidebar -->
+    {% include 'sidebar.html' %}
+
+    <!-- Conteneur principal -->
+    <div class="main-content">
+        <div class="container official-document">
+            <!-- En-tête du document -->
+            <div class="document-header">
+                <div class="header-logo">
+                    <div class="heart-container">
+                        <div class="heart"></div>
+                    </div>
+                </div>
+                <div class="header-title">
+                    <h1>Fiche Officielle du Donneur</h1>
+                    <p>Numéro d'Identification : #{{ donneur.id }}</p>
+                    <p>Date de Remplissage : {{ donneur.date_remplissage }}</p>
+                </div>
+            </div>
+
+            <!-- Corps du document -->
+            <div class="document-body">
+                <!-- Section : Informations Personnelles -->
+                <div class="document-section">
+                    <h2>Informations Personnelles</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Date de Naissance :</span>
+                            <span class="info-value">{{ donneur.date_naissance }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Âge :</span>
+                            <span class="info-value">{{ donneur.age }} ans</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Niveau d'Étude :</span>
+                            <span class="info-value">{{ donneur.niveau_etude }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Genre :</span>
+                            <span class="info-value">{{ donneur.genre }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Situation Matrimoniale :</span>
+                            <span class="info-value">{{ donneur.situation_matrimoniale }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Profession :</span>
+                            <span class="info-value">{{ donneur.profession }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Arrondissement de Résidence :</span>
+                            <span class="info-value">{{ donneur.arrondissement_residence }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Quartier de Résidence :</span>
+                            <span class="info-value">{{ donneur.quartier_residence }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Poids :</span>
+                            <span class="info-value">{{ donneur.poids }} kg</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section : Conditions de Santé -->
+                <div class="document-section">
+                    <h2>Conditions de Santé</h2>
+                    {% if conditions %}
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Taille :</span>
+                                <span class="info-value">{{ conditions.taille }} cm</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Poids :</span>
+                                <span class="info-value">{{ conditions.poids }} kg</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Maladie Chronique :</span>
+                                <span class="info-value">{{ conditions.maladie_chronique }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Dernier Don :</span>
+                                <span class="info-value">{{ conditions.dernier_don|default:"Non spécifié" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Porteur HIV :</span>
+                                <span class="info-value">{{ conditions.porteur_hiv|yesno:"Oui,Non" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Porteur HBS :</span>
+                                <span class="info-value">{{ conditions.porteur_hbs|yesno:"Oui,Non" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Porteur HCV :</span>
+                                <span class="info-value">{{ conditions.porteur_hcv|yesno:"Oui,Non" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Opéré :</span>
+                                <span class="info-value">{{ conditions.opere|yesno:"Oui,Non" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Drépanocytaire :</span>
+                                <span class="info-value">{{ conditions.drepanocytaire|yesno:"Oui,Non" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Diabétique :</span>
+                                <span class="info-value">{{ conditions.diabetique|yesno:"Oui,Non" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Hypertendu :</span>
+                                <span class="info-value">{{ conditions.hypertendu|yesno:"Oui,Non" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Asthmatique :</span>
+                                <span class="info-value">{{ conditions.asthmatique|yesno:"Oui,Non" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Cardiaque :</span>
+                                <span class="info-value">{{ conditions.cardiaque|yesno:"Oui,Non" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Tatoué :</span>
+                                <span class="info-value">{{ conditions.tatoue|yesno:"Oui,Non" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Scarifié :</span>
+                                <span class="info-value">{{ conditions.scarifie|yesno:"Oui,Non" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Raison de Non-Éligibilité :</span>
+                                <span class="info-value">{{ conditions.raison_non_eligibilite|default:"Non spécifié" }}</span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="no-data">Aucune condition de santé enregistrée pour ce donneur.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Bouton de retour -->
+            <div class="btn-group">
+                <a href="{% url 'liste_donneurs' %}" class="btn btn-secondary">Retour à la Liste</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/scripts_liste.js' %}"></script>
+</body>
+</html>

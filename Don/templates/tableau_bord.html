@@ -1,0 +1,652 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord - Don de Sang</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #d9534f;
+            --primary-dark: #c9302c;
+            --secondary-color: #e74c3c;
+            --accent-color: #4682b4;
+            --background-gradient-start: #1e293b;
+            --background-gradient-end: #334155;
+            --text-dark: #2c3e50;
+            --text-light: #f8fafc;
+            --transition-speed: 0.3s;
+            --sidebar-width: 280px;
+            --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--background-gradient-start), var(--background-gradient-end));
+            color: var(--text-light);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+            animation: fadeInBody 1s ease-in-out;
+        }
+
+        @keyframes fadeInBody {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.05);
+            z-index: -1;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 40px; /* Augmentation du padding pour plus d'espace */
+            width: calc(100% - var(--sidebar-width)); /* Ajustement pour occuper tout l'espace disponible */
+            min-height: 100vh;
+            transition: var(--transition-speed);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            width: 100%; /* Utilisation de toute la largeur disponible */
+            max-width: 1400px; /* Augmentation de la largeur maximale pour un contenu plus spacieux */
+            padding: 30px; /* Plus de padding interne */
+            background: rgba(30, 41, 59, 0.8); /* Fond inspiré du second code */
+            border-radius: 16px;
+            box-shadow: var(--box-shadow);
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px; /* Plus d'espace sous le header */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+
+        .heart-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-right: 20px;
+        }
+
+        .heart {
+            width: 80px;
+            height: 80px;
+            background: var(--secondary-color);
+            position: relative;
+            transform: rotate(-45deg);
+            animation: pulse 1.5s infinite ease-in-out;
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            width: 80px;
+            height: 80px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .heart::before {
+            left: 40px;
+            top: 0;
+        }
+
+        .heart::after {
+            left: 0;
+            top: -40px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: rotate(-45deg) scale(1); }
+            50% { transform: rotate(-45deg) scale(1.1); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--text-light);
+            margin-bottom: 25px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 4px;
+            bottom: -10px;
+            left: 0;
+            background: var(--accent-color);
+        }
+
+        .message-box {
+            max-width: 700px;
+            margin: 0 auto 30px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: var(--box-shadow);
+            border-left: 4px solid var(--primary-color);
+            animation: slideDown 0.5s ease forwards;
+        }
+
+        .message-box p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Statistiques des Donneurs */
+        .stats-section {
+            margin-bottom: 40px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: var(--transition-speed);
+            box-shadow: var(--box-shadow);
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-card h3 {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        /* Graphiques */
+        .charts-section {
+            margin-bottom: 40px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .chart-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: var(--transition-speed);
+            max-width: 450px;
+            margin: 0 auto;
+            box-shadow: var(--box-shadow);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 320px; /* Légère augmentation pour plus d'espace */
+            overflow: hidden;
+        }
+
+        .chart-card canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .chart-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .chart-card h3 {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        /* Conditions de Santé */
+        .conditions-section {
+            margin-bottom: 40px;
+        }
+
+        .conditions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .condition-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: var(--transition-speed);
+            box-shadow: var(--box-shadow);
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .condition-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .condition-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .condition-card h3 {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .condition-card p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        /* Actions Rapides */
+        .actions-section {
+            margin-bottom: 40px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .action-card {
+            background: var(--accent-color);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-light);
+            transition: var(--transition-speed);
+            box-shadow: var(--box-shadow);
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .action-card:hover {
+            background: #3b72a5;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(70, 130, 180, 0.4);
+        }
+
+        .action-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .action-card h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .chart-card {
+                max-width: 100%;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                width: 100%;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .heart-container {
+                width: 60px;
+                height: 60px;
+            }
+
+            .heart, .heart::before, .heart::after {
+                width: 60px;
+                height: 60px;
+            }
+
+            .heart::before {
+                left: 30px;
+            }
+
+            .heart::after {
+                top: -30px;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'sidebar.html' %}
+
+    <div class="background-overlay"></div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="header-section">
+                <div class="heart-container">
+                    <div class="heart"></div>
+                </div>
+                <h1><i class="fas fa-tachometer-alt"></i> Tableau de Bord</h1>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message-box {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Statistiques des Donneurs -->
+            <div class="stats-section">
+                <h2>Statistiques des Donneurs</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-users stat-icon"></i>
+                        <h3>Total Donneurs</h3>
+                        <p>{{ total_donneurs }}</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-male stat-icon"></i>
+                        <h3>Hommes</h3>
+                        <p>{{ donneurs_hommes }}</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-female stat-icon"></i>
+                        <h3>Femmes</h3>
+                        <p>{{ donneurs_femmes }}</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-genderless stat-icon"></i>
+                        <h3>Autre</h3>
+                        <p>{{ donneurs_autre }}</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-check-circle stat-icon"></i>
+                        <h3>Éligibles</h3>
+                        <p>{{ donneurs_eligible }}</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-times-circle stat-icon"></i>
+                        <h3>Non Éligibles</h3>
+                        <p>{{ donneurs_non_eligible }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graphiques -->
+            <div class="charts-section">
+                <h2>Visualisations</h2>
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Répartition par Genre</h3>
+                        <div class="chart-container">
+                            <canvas id="genreChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Répartition par Éligibilité</h3>
+                        <div class="chart-container">
+                            <canvas id="eligibiliteChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Répartition par Âge</h3>
+                        <div class="chart-container">
+                            <canvas id="ageChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistiques des Conditions de Santé -->
+            <div class="conditions-section">
+                <h2>Conditions de Santé</h2>
+                <div class="conditions-grid">
+                    <div class="condition-card">
+                        <i class="fas fa-heartbeat condition-icon"></i>
+                        <h3>Maladies Chroniques</h3>
+                        <p>{{ maladies_chroniques }} donneurs ({{ pourcentage_maladies_chroniques }}%)</p>
+                    </div>
+                    <div class="condition-card">
+                        <i class="fas fa-virus condition-icon"></i>
+                        <h3>Porteurs HIV</h3>
+                        <p>{{ porteurs_hiv }} donneurs</p>
+                    </div>
+                    <div class="condition-card">
+                        <i class="fas fa-virus condition-icon"></i>
+                        <h3>Porteurs Hépatite B</h3>
+                        <p>{{ porteurs_hbs }} donneurs</p>
+                    </div>
+                    <div class="condition-card">
+                        <i class="fas fa-virus condition-icon"></i>
+                        <h3>Porteurs Hépatite C</h3>
+                        <p>{{ porteurs_hcv }} donneurs</p>
+                    </div>
+                    <div class="condition-card">
+                        <i class="fas fa-dna condition-icon"></i>
+                        <h3>Drépanocytaires</h3>
+                        <p>{{ drepanocytaires }} donneurs</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Rapides -->
+            <div class="actions-section">
+                <h2>Actions Rapides</h2>
+                <div class="actions-grid">
+                    <a href="{% url 'ajout_donneur' %}" class="action-card">
+                        <i class="fas fa-user-plus action-icon"></i>
+                        <h3>Ajouter un Donneur</h3>
+                    </a>
+                    <a href="{% url 'verifier_eligibilite' %}" class="action-card">
+                        <i class="fas fa-user-check action-icon"></i>
+                        <h3>Vérifier Éligibilité</h3>
+                    </a>
+                    <a href="{% url 'tableau_eligibilite' %}" class="action-card">
+                        <i class="fas fa-table action-icon"></i>
+                        <h3>Tableau d'Éligibilité</h3>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Graphique de Répartition par Genre (Donut)
+            const genreCtx = document.getElementById('genreChart').getContext('2d');
+            new Chart(genreCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: {{ genre_data.labels|safe }},
+                    datasets: [{
+                        data: {{ genre_data.data|safe }},
+                        backgroundColor: {{ genre_data.colors|safe }},
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#f8fafc'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Graphique de Répartition par Éligibilité (Donut)
+            const eligibiliteCtx = document.getElementById('eligibiliteChart').getContext('2d');
+            new Chart(eligibiliteCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: {{ eligibilite_data.labels|safe }},
+                    datasets: [{
+                        data: {{ eligibilite_data.data|safe }},
+                        backgroundColor: {{ eligibilite_data.colors|safe }},
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#f8fafc'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Graphique de Répartition par Âge (Barres)
+            const ageCtx = document.getElementById('ageChart').getContext('2d');
+            new Chart(ageCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ age_data.labels|safe }},
+                    datasets: [{
+                        label: 'Nombre de Donneurs',
+                        data: {{ age_data.data|safe }},
+                        backgroundColor: {{ age_data.colors|safe }},
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#f8fafc'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#f8fafc'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

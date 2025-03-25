@@ -1,0 +1,408 @@
+<!-- templates/tableau_eligibilite.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau d'Éligibilité - Don de Sang</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #d9534f;
+            --primary-dark: #c9302c;
+            --secondary-color: #e74c3c;
+            --accent-color: #4682b4;
+            --background-gradient-start: #1e293b;
+            --background-gradient-end: #334155;
+            --text-dark: #2c3e50;
+            --text-light: #f8fafc;
+            --success-green: #10b981;
+            --danger-red: #ef4444;
+            --transition-speed: 0.3s;
+            --sidebar-width: 280px;
+            --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--background-gradient-start), var(--background-gradient-end));
+            color: var(--text-light);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+            animation: fadeInBody 1s ease-in-out;
+        }
+
+        @keyframes fadeInBody {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.05);
+            z-index: -1;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 40px; /* Augmentation du padding pour plus d'espace */
+            width: calc(100% - var(--sidebar-width)); /* Occupation de tout l'espace disponible */
+            min-height: 100vh;
+            transition: var(--transition-speed);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px; /* Largeur maximale augmentée pour plus d'espace */
+            padding: 30px; /* Plus de padding interne */
+            background: rgba(30, 41, 59, 0.8); /* Fond inspiré du second code */
+            border-radius: 16px;
+            box-shadow: var(--box-shadow);
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+
+        .heart-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-right: 20px;
+        }
+
+        .heart {
+            width: 80px;
+            height: 80px;
+            background: var(--secondary-color);
+            position: relative;
+            transform: rotate(-45deg);
+            animation: pulse 1.5s infinite ease-in-out;
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            width: 80px;
+            height: 80px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .heart::before {
+            left: 40px;
+            top: 0;
+        }
+
+        .heart::after {
+            left: 0;
+            top: -40px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: rotate(-45deg) scale(1); }
+            50% { transform: rotate(-45deg) scale(1.1); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .message-box {
+            max-width: 700px;
+            margin: 0 auto 30px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: var(--box-shadow);
+            border-left: 4px solid var(--primary-color);
+            animation: slideDown 0.5s ease forwards;
+        }
+
+        .message-box p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .table-section {
+            margin-bottom: 40px;
+            overflow-x: auto; /* Ajout pour gérer les tables larges sur petits écrans */
+        }
+
+        .donneur-table {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.8);
+            color: var(--text-light);
+            border-radius: 16px;
+            box-shadow: var(--box-shadow);
+            border-collapse: separate;
+            border-spacing: 0;
+            overflow: hidden;
+        }
+
+        .donneur-table thead {
+            background: var(--primary-color);
+        }
+
+        .donneur-table th {
+            padding: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .donneur-table td {
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .donneur-table tbody tr {
+            transition: var(--transition-speed);
+        }
+
+        .donneur-table tbody tr:hover {
+            background: rgba(217, 83, 79, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .eligible {
+            color: var(--success-green);
+            font-weight: 600;
+        }
+
+        .non-eligible {
+            color: var(--danger-red);
+            font-weight: 600;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: var(--text-light);
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 500;
+            text-transform: uppercase;
+            transition: var(--transition-speed);
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(169, 68, 66, 0.4);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        .btn-secondary {
+            background: var(--accent-color);
+        }
+
+        .btn-secondary:hover {
+            background: #3b72a5;
+            box-shadow: 0 5px 15px rgba(70, 130, 180, 0.4);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.15);
+            border-left: 4px solid var(--success-green);
+            color: #ecfdf5;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.15);
+            border-left: 4px solid var(--danger-red);
+            color: #fef2f2;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                width: 100%;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .heart-container {
+                width: 60px;
+                height: 60px;
+            }
+
+            .heart, .heart::before, .heart::after {
+                width: 60px;
+                height: 60px;
+            }
+
+            .heart::before {
+                left: 30px;
+            }
+
+            .heart::after {
+                top: -30px;
+            }
+
+            .donneur-table th,
+            .donneur-table td {
+                padding: 12px;
+                font-size: 0.85rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'sidebar.html' %}
+
+    <div class="background-overlay"></div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="header-section">
+                <div class="heart-container">
+                    <div class="heart"></div>
+                </div>
+                <h1><i class="fas fa-table"></i> Tableau d'Éligibilité des Donneurs</h1>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message-box {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="table-section">
+                <table class="donneur-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> ID</th>
+                            <th><i class="fas fa-venus-mars"></i> Genre</th>
+                            <th><i class="fas fa-birthday-cake"></i> Âge</th>
+                            <th><i class="fas fa-map-marker-alt"></i> Quartier</th>
+                            <th><i class="fas fa-check-circle"></i> Éligibilité</th>
+                            <th><i class="fas fa-cogs"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for donneur in donneurs %}
+                            <tr>
+                                <td>{{ donneur.id }}</td>
+                                <td>
+                                    {% if donneur.genre == 'M' %}
+                                        <i class="fas fa-male"></i> Homme
+                                    {% elif donneur.genre == 'F' %}
+                                        <i class="fas fa-female"></i> Femme
+                                    {% else %}
+                                        <i class="fas fa-genderless"></i> Autre
+                                    {% endif %}
+                                </td>
+                                <td>{{ donneur.age }} ans</td>
+                                <td>{{ donneur.quartier_residence }}</td>
+                                <td class="{% if donneur.est_eligible %}eligible{% else %}non-eligible{% endif %}">
+                                    {{ donneur.est_eligible|yesno:"Oui,Non" }}
+                                </td>
+                                <td>
+                                    <a href="{% url 'verifier_eligibilite_donneur' donneur.id %}" class="btn btn-small">
+                                        <i class="fas fa-user-check"></i> Vérifier
+                                    </a>
+                                    <a href="{% url 'detail_donneur' donneur.id %}" class="btn btn-small btn-secondary">
+                                        <i class="fas fa-eye"></i> Détails
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6">Aucun donneur trouvé.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'liste_donneurs' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour à la Liste
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

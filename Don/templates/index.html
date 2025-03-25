@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don de Sang - Sauvez des Vies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #e74c3c;      /* Red for blood */
+            --secondary-color: #3498db;    /* Blue for medical */
+            --accent-color: #f39c12;       /* Orange for warmth */
+            --background-color: #f8f9fa;   /* Light background */
+            --card-bg-color: #ffffff;      /* White for cards */
+            --text-color: #333333;         /* Dark text */
+            --text-light: #666666;         /* Light text */
+            --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .blood-donation-site {
+            position: relative;
+        }
+
+        /* Particles Background */
+        .background-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: floatParticle infinite alternate ease-in-out;
+        }
+
+        @keyframes floatParticle {
+            from { transform: translateY(0) rotate(0deg); opacity: 0.2; }
+            to { transform: translateY(-30px) rotate(360deg); opacity: 0.5; }
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all var(--transition-speed);
+        }
+
+        .navbar.scrolled {
+            padding: 0.7rem 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            color: var(--primary-color);
+            transition: transform var(--transition-speed);
+        }
+
+        .logo:hover .logo-icon {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .logo span {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-speed);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--primary-color);
+            transition: width var(--transition-speed);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .login-btn {
+            padding: 0.5rem 1.5rem;
+            background-color: var(--secondary-color);
+            color: white !important;
+            border-radius: 50px;
+            transition: all var(--transition-speed);
+        }
+
+        .login-btn:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .login-btn::after {
+            display: none;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mobile-menu-btn span {
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+            transition: all 0.3s;
+        }
+
+        /* Sections General */
+        section {
+            padding: 6rem 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            color: var(--text-color);
+            margin-bottom: 2.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: var(--primary-color);
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all var(--transition-speed);
+            box-shadow: var(--box-shadow);
+        }
+
+        .primary-btn {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .primary-btn:hover {
+            background: #d63031;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(231, 76, 60, 0.2);
+        }
+
+        .secondary-btn {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            margin-left: 1rem;
+        }
+
+        .secondary-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-5px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%), url('https://images.unsplash.com/photo-1615461066841-6116e61058f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center/cover;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .heart-container {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            margin: 0 auto 2rem;
+        }
+
+        .heart-icon {
+            width: 100%;
+            height: 100%;
+            color: var(--primary-color);
+            animation: heartBeat 1.5s ease-in-out infinite;
+        }
+
+        .heart-pulse {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(231, 76, 60, 0.2);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.2); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.1); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 0; }
+        }
+
+        .hero-buttons {
+            margin-top: 2rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator span {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .chevron-icon {
+            color: var(--primary-color);
+            width: 24px;
+            height: 24px;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-10px) translateX(-50%); }
+            60% { transform: translateY(-5px) translateX(-50%); }
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background-color: var(--card-bg-color);
+            padding: 3rem 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+            transition: transform var(--transition-speed);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        /* Why Donate Section */
+        .why-donate {
+            background-color: var(--background-color);
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg-color);
+            padding: 2.5rem 2rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all var(--transition-speed);
+            box-shadow: var(--box-shadow);
+        }
+
+        .card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        /* Process Section */
+        .process-section {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%), url('https://images.unsplash.com/photo-1584362917165-526a968579e8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center/cover;
+        }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .step {
+            background: var(--card-bg-color);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all var(--transition-speed);
+            box-shadow: var(--box-shadow);
+            position: relative;
+            z-index: 1;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 15px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity var(--transition-speed);
+        }
+
+        .step:hover {
+            transform: translateY(-10px);
+        }
+
+        .step:hover::before {
+            opacity: 0.05;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+        }
+
+        .step h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            background-color: var(--card-bg-color);
+        }
+
+        .testimonials-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            min-height: 250px;
+        }
+
+        .testimonial {
+            background: var(--background-color);
+            padding: 3rem 2rem 2rem;
+            border-radius: 15px;
+            text-align: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.5s ease;
+            box-shadow: var(--box-shadow);
+        }
+
+        .testimonial.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .quote-mark {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-size: 5rem;
+            color: var(--primary-color);
+            opacity: 0.2;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+
+        .testimonial p {
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonial h3 {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+
+        .testimonial-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            width: 100%;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background: var(--primary-color);
+            transform: scale(1.2);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #c0392b 100%);
+            color: white;
+            text-align: center;
+            padding: 5rem 2rem;
+        }
+
+        .cta-section h2 {
+            color: white;
+        }
+
+        .cta-section h2::after {
+            background: white;
+        }
+
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .cta-section .btn {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .cta-section .btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-logo .logo-icon {
+            color: white;
+        }
+
+        .footer-logo span {
+            color: white;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3rem;
+        }
+
+        .footer-column {
+            min-width: 160px;
+        }
+
+        .footer-column h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .footer-column a {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            margin-bottom: 0.8rem;
+            transition: color var(--transition-speed);
+        }
+
+        .footer-column a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all var(--transition-speed);
+        }
+
+        .social-links a:hover {
+            background: var(--primary-color);
+            transform: translateY(-5px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .hero-section {
+                padding-top: 100px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .secondary-btn {
+                margin-left: 0;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            section {
+                padding: 4rem 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .card, .step {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="blood-donation-site">
+        <div class="background-particles" id="particles"></div>
+
+        <!-- Navbar -->
+        <nav class="navbar" id="navbar">
+            <div class="logo">
+                <i class="fas fa-heartbeat logo-icon"></i>
+                <span>Don de Sang</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home">Accueil</a>
+                <a href="#why">Pourquoi Donner</a>
+                <a href="#process">Processus</a>
+                <a href="#testimonials">Témoignages</a>
+                <a href="{% url 'login' %}" class="login-btn">Connexion</a>
+            </div>
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="home" class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="heart-container">
+                        <i class="fas fa-heart heart-icon"></i>
+                        <div class="heart-pulse"></div>
+                    </div>
+                    <h1>Sauvez des Vies avec un Don</h1>
+                    <p>Chaque goutte compte. Rejoignez notre communauté pour offrir l'espoir là où il est le plus nécessaire.</p>
+                    <div class="hero-buttons">
+                        <a href="#" class="btn primary-btn">Donnez Maintenant</a>
+                        <a href="#why" class="btn secondary-btn">En Savoir Plus</a>
+                    </div>
+                </div>
+                <div class="scroll-indicator" id="scroll-indicator">
+                    <span>Découvrir</span>
+                    <i class="fas fa-chevron-down chevron-icon"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="3">0</div>
+                        <div class="stat-label">Vies sauvées par don</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="10">0</div>
+                        <div class="stat-label">Minutes pour donner</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="450">0</div>
+                        <div class="stat-label">ml de sang par don</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="42">0</div>
+                        <div class="stat-label">Jours pour régénérer</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Donate Section -->
+        <section id="why" class="why-donate">
+            <div class="container">
+                <h2>Pourquoi Donner du Sang ?</h2>
+                <div class="cards">
+                    <div class="card">
+                        <i class="fas fa-heart card-icon"></i>
+                        <h3>Sauver des Vies</h3>
+                        <p>Un seul don peut sauver jusqu'à trois vies en cas d'urgence ou de chirurgie.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-users card-icon"></i>
+                        <h3>Renforcer la Communauté</h3>
+                        <p>Votre geste soutient les hôpitaux locaux et aide vos voisins dans le besoin.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-hands-helping card-icon"></i>
+                        <h3>Acte de Solidarité</h3>
+                        <p>Donner du sang est une manière simple et puissante d'exprimer votre humanité.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Process Section -->
+        <section id="process" class="process-section">
+            <div class="container">
+                <h2>Le Processus de Don</h2>
+                <div class="process-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Inscription</h3>
+                        <p>Remplissez un court formulaire pour vérifier votre éligibilité.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Examen Médical</h3>
+                        <p>Un rapide contrôle de santé pour assurer votre sécurité.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Don</h3>
+                        <p>Le don prend environ 10 minutes dans un environnement sécurisé.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3>Repos</h3>
+                        <p>Reposez-vous et savourez une collation après votre don.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="testimonials">
+            <div class="container">
+                <h2>Témoignages</h2>
+                <div class="testimonials-container" id="testimonials-container">
+                    <div class="testimonial active">
+                        <div class="quote-mark">"</div>
+                        <p>Donner du sang m'a permis de sentir que je faisais une différence. C'est rapide et gratifiant.</p>
+                        <h3>- Marie, 34 ans</h3>
+                    </div>
+                    <div class="testimonial">
+                        <div class="quote-mark">"</div>
+                        <p>J'ai donné après un accident dans ma famille. Aujourd'hui, je suis fier d'aider d'autres familles.</p>
+                        <h3>- Pierre, 45 ans</h3>
+                    </div>
+                    <div class="testimonial">
+                        <div class="quote-mark">"</div>
+                        <p>Mon don régulier est devenu une habitude qui me fait sentir utile. C'est si simple et ça sauve des vies.</p>
+                        <h3>- Sophie, 29 ans</h3>
+                    </div>
+                    <div class="testimonial-dots">
+                        <span class="dot active" data-index="0"></span>
+                        <span class="dot" data-index="1"></span>
+                        <span class="dot" data-index="2"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <h2>Prêt à Faire la Différence ?</h2>
+                <p>Rejoignez les milliers de donneurs qui sauvent des vies chaque jour.</p>
+                <a href="#" class="btn primary-btn">Donnez Maintenant</a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-logo">
+                        <i class="fas fa-heartbeat logo-icon"></i>
+                        <span>Don de Sang</span>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4>Liens Rapides</h4>
+                            <a href="#home">Accueil</a>
+                            <a href="#why">Pourquoi Donner</a>
+                            <a href="#process">Processus</a>
+                            <a href="#testimonials">Témoignages</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4>Ressources</h4>
+                            <a href="#">FAQ</a>
+                            <a href="#">Éligibilité</a>
+                            <a href="#">Centres de Don</a>
+                            <a href="#">Blog</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4>Contact</h4>
+                            <a href="#">Nous Contacter</a>
+                            <a href="#">Support</a>
+                            <a href="#">Partenariats</a>
+                            <a href="#">Presse</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Don de Sang. Tous droits réservés.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Variables
+        let currentTestimonialIndex = 0;
+        const testimonials = document.querySelectorAll('.testimonial');
+        const dots = document.querySelectorAll('.dot');
+        
+        // Create particles on load
+        window.addEventListener('load', function() {
+            createParticles();
+            animateStatNumbers();
+            
+            // Start testimonial rotation
+            setInterval(rotateTestimonials, 5000);
+        });
+        
+        // Handle scroll events for navbar
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Smooth scroll for navbar links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                if (this.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId && targetId !== '#') {
+                        const target = document.querySelector(targetId);
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                }
+            });
+        });
+        
+        // Scroll indicator click
+        document.getElementById('scroll-indicator').addEventListener('click', function() {
+            const sections = document.querySelectorAll('section');
+            const currentSection = Array.from(sections).findIndex(section => {
+                const rect = section.getBoundingClientRect();
+                return rect.top <= 100 && rect.bottom > 100;
+            });
+            
+            if (currentSection !== -1 && currentSection < sections.length - 1) {
+                sections[currentSection + 1].scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+        
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        });
+        
+        // Testimonial dots click
+        dots.forEach(dot => {
+            dot.addEventListener('click', function() {
+                const index = parseInt(this.getAttribute('data-index'));
+                currentTestimonialIndex = index;
+                updateTestimonials();
+            });
+        });
+        
+        // Create particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const numParticles = 75;
+            const colors = ['#e74c3c', '#3498db', '#f39c12'];
+            
+            // Clear existing particles
+            particlesContainer.innerHTML = '';
+            
+            for (let i = 0; i < numParticles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = `${Math.random() * 4 + 2}px`;
+                particle.style.height = particle.style.width;
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.animationDuration = `${5 + Math.random() * 7}s`;
+                particle.style.animationDelay = `${Math.random() * 2}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Rotate testimonials
+        function rotateTestimonials() {
+            currentTestimonialIndex = (currentTestimonialIndex + 1) % testimonials.length;
+            updateTestimonials();
+        }
+        
+        // Update testimonials display
+        function updateTestimonials() {
+            testimonials.forEach((testimonial, index) => {
+                testimonial.classList.remove('active');
+                dots[index].classList.remove('active');
+                
+                if (index === currentTestimonialIndex) {
+                    testimonial.classList.add('active');
+                    dots[index].classList.add('active');
+                }
+            });
+        }
+        
+        // Animate stat numbers
+        function animateStatNumbers() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            
+            statNumbers.forEach(stat => {
+                const targetValue = parseInt(stat.getAttribute('data-count'));
+                const duration = 2000; // 2 seconds
+                const startTime = Date.now();
+                
+                function updateCounter() {
+                    const currentTime = Date.now();
+                    const elapsedTime = currentTime - startTime;
+                    
+                    if (elapsedTime < duration) {
+                        const progress = elapsedTime / duration;
+                        const currentValue = Math.floor(targetValue * progress);
+                        stat.textContent = currentValue;
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        stat.textContent = targetValue;
+                    }
+                }
+                
+                updateCounter();
+            });
+        }
+    </script>
+</body>
+</html>
